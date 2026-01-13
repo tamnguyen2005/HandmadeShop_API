@@ -486,4 +486,4 @@ bin/
 obj/
 .vs/
 .vscode/
-appsettings.json
+appsettings*.json
