@@ -1,12 +1,20 @@
-var builder = WebApplication.CreateBuilder(args);
+using HandmadeShop.Application.Interfaces;
+using HandmadeShop.Infrastructure.Persistence;
+using HandmadeShop.Infrastructure.Repository;
+using Microsoft.EntityFrameworkCore;
 
+var builder = WebApplication.CreateBuilder(args);
+// SQL Connection
+var connection = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<HandmadeShopDBContext>(option => option.UseSqlServer(connection));
+// UnitOfWork Service
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // Add services to the container.
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
