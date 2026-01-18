@@ -11,10 +11,11 @@ namespace HandmadeShop.Infrastructure.Repository
         private GenericRepository<Category>? categories;
         private GenericRepository<Order>? orders;
         private GenericRepository<OrderHistory>? orderHistories;
-        private GenericRepository<Product>? products;
+        private ProductRepository? products;
         private GenericRepository<OrderItem>? orderItems;
         private GenericRepository<ProductOption>? productOptions;
         private GenericRepository<ProductOptionValue>? productOptionValues;
+        private GenericRepository<Coupon>? coupons;
 
         public UnitOfWork(HandmadeShopDBContext context)
         {
@@ -77,13 +78,13 @@ namespace HandmadeShop.Infrastructure.Repository
             }
         }
 
-        public IGenericRepository<Product> Products
+        public IProductRepository Products
         {
             get
             {
                 if (products == null)
                 {
-                    products = new GenericRepository<Product>(_context);
+                    products = new ProductRepository(_context);
                 }
                 return products;
             }
@@ -110,6 +111,18 @@ namespace HandmadeShop.Infrastructure.Repository
                     productOptionValues = new GenericRepository<ProductOptionValue>(_context);
                 }
                 return productOptionValues;
+            }
+        }
+
+        public IGenericRepository<Coupon> Coupons
+        {
+            get
+            {
+                if (coupons == null)
+                {
+                    coupons = new GenericRepository<Coupon>(_context);
+                }
+                return coupons;
             }
         }
 

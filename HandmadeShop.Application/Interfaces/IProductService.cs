@@ -1,0 +1,11 @@
+﻿using HandmadeShop.Application.DTOs.Product;
+
+namespace HandmadeShop.Application.Interfaces
+{
+    public interface IProductService
+    {
+        Task CreateProductAsync(CreateProductRequest request);
+
+        Task<ProductResponse?> GetProductByIdAsync(Guid id);
+    }
+}

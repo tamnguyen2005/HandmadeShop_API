@@ -9,7 +9,8 @@ namespace HandmadeShop.Application.Interfaces
         IGenericRepository<Order> Orders { get; }
         IGenericRepository<OrderHistory> OrderHistories { get; }
         IGenericRepository<OrderItem> OrderItems { get; }
-        IGenericRepository<Product> Products { get; }
+        IProductRepository Products { get; }
+        IGenericRepository<Coupon> Coupons { get; }
         IGenericRepository<ProductOption> ProductOptions { get; }
         IGenericRepository<ProductOptionValue> ProductOptionValues { get; }
 
