@@ -1,4 +1,5 @@
 using HandmadeShop.Application.Interfaces;
+using HandmadeShop.Application.Services;
 using HandmadeShop.Infrastructure.Persistence;
 using HandmadeShop.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,10 @@ var connection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<HandmadeShopDBContext>(option => option.UseSqlServer(connection));
 // UnitOfWork Service
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IUserService, UserService>();
 // Add services to the container.
 
 builder.Services.AddControllers();
