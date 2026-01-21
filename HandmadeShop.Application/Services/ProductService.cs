@@ -1,6 +1,6 @@
-﻿using HandmadeShop.Application.Builders;
-using HandmadeShop.Application.DTOs.Product;
+﻿using HandmadeShop.Application.DTOs.Product;
 using HandmadeShop.Application.Interfaces;
+using HandmadeShop.Application.Patterns.Builders;
 
 namespace HandmadeShop.Application.Services
 {

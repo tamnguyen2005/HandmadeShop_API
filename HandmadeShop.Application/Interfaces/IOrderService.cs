@@ -5,5 +5,6 @@ namespace HandmadeShop.Application.Interfaces
     public interface IOrderService
     {
         Task CreateOrderAsync(CreateOrderRequest request);
+        Task UpdateOrderStatusAsync(Guid id, string action);
     }
 }

@@ -1,4 +1,8 @@
+using HandmadeShop.API.Middlewares;
+using HandmadeShop.Application.Features.Inventory;
+using HandmadeShop.Application.Features.Orders.Events;
 using HandmadeShop.Application.Interfaces;
+using HandmadeShop.Application.Patterns.Observers;
 using HandmadeShop.Application.Services;
 using HandmadeShop.Infrastructure.Persistence;
 using HandmadeShop.Infrastructure.Repository;
@@ -14,6 +18,8 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<EventDispatcher>();
+builder.Services.AddScoped<IHandmadeObserver<OrderCreatedEvent>, InventoryHandler>();
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -28,7 +34,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

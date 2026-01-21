@@ -1,7 +1,7 @@
-﻿using HandmadeShop.Application.Strategies;
+﻿using HandmadeShop.Application.Patterns.Strategies;
 using HandmadeShop.Domain.Entities;
 
-namespace HandmadeShop.Application.Factories
+namespace HandmadeShop.Application.Patterns.Factories
 {
     public static class PromotionStrategyFactory
     {

@@ -1,4 +1,4 @@
-﻿namespace HandmadeShop.Application.Strategies
+﻿namespace HandmadeShop.Application.Patterns.Strategies
 {
     internal class FixedAmountPromotionStrategy : IPromotionStrategy
     {

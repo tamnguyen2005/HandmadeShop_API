@@ -18,15 +18,8 @@ namespace HandmadeShop.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddNewUser(CreateUserRequest request)
         {
-            try
-            {
-                await _userService.CreateUserAsync(request);
-                return StatusCode(StatusCodes.Status201Created, new { message = "Create new user successfully !" });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _userService.CreateUserAsync(request);
+            return StatusCode(StatusCodes.Status201Created, new { message = "Create new user successfully !" });
         }
     }
 }
