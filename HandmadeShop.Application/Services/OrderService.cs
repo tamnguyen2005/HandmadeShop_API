@@ -1,7 +1,10 @@
 ﻿using HandmadeShop.Application.DTOs.Order;
-using HandmadeShop.Application.Factories;
+using HandmadeShop.Application.Features.Orders.Events;
 using HandmadeShop.Application.Interfaces;
-using HandmadeShop.Application.Strategies;
+using HandmadeShop.Application.Patterns.Factories;
+using HandmadeShop.Application.Patterns.Observers;
+using HandmadeShop.Application.Patterns.States;
+using HandmadeShop.Application.Patterns.Strategies;
 using HandmadeShop.Domain.Entities;
 
 namespace HandmadeShop.Application.Services
@@ -9,10 +12,30 @@ namespace HandmadeShop.Application.Services
     public class OrderService : IOrderService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly EventDispatcher _dispatcher;
 
-        public OrderService(IUnitOfWork unitOfWork)
+        public OrderService(IUnitOfWork unitOfWork, EventDispatcher eventDispatcher)
         {
             _unitOfWork = unitOfWork;
+            _dispatcher = eventDispatcher;
+        }
+
+        public async Task UpdateOrderStatusAsync(Guid id, string action)
+        {
+            var order = await _unitOfWork.Orders.GetByIdAsync(id);
+            if (order == null)
+                throw new KeyNotFoundException("Order does not exist !");
+            OrderState orderState = OrderStateFactory.GetState(order.Status);
+            switch (action.ToUpper())
+            {
+                case "CONFIRM": orderState.Confirm(order); break;
+                case "SHIP": orderState.Ship(order); break;
+                case "COMPLETE": orderState.Complete(order); break;
+                case "CANCEL": orderState.Cancel(order); break;
+                default: throw new ArgumentException("Action is invalid !");
+            }
+            _unitOfWork.Orders.Update(order);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task CreateOrderAsync(CreateOrderRequest request)
@@ -68,6 +91,7 @@ namespace HandmadeShop.Application.Services
                 Items = orderItems
             };
             await _unitOfWork.Orders.AddAsync(order);
+            await _dispatcher.PublishAsync(new OrderCreatedEvent(order));
             await _unitOfWork.SaveChangesAsync();
         }
     }

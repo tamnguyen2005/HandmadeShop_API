@@ -1,6 +1,6 @@
 ﻿using HandmadeShop.Domain.Entities;
 
-namespace HandmadeShop.Application.Builders
+namespace HandmadeShop.Application.Patterns.Builders
 {
     public class ProductBuilder
     {

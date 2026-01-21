@@ -18,23 +18,12 @@ namespace HandmadeShop.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddNewCategory(CreateCategoryRequest request)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-                await _categoryService.AddCategoryAsync(request);
-                return StatusCode(StatusCodes.Status201Created, new { message = "Create new category succeccfully !" });
+                return BadRequest(ModelState);
             }
-            catch (KeyNotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
-            }
+            await _categoryService.AddCategoryAsync(request);
+            return StatusCode(StatusCodes.Status201Created, new { message = "Create new category succeccfully !" });
         }
     }
 }
