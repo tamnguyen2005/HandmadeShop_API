@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace HandmadeShop.Application.DTOs.User
 {
-    public class CreateUserRequest
+    public class RegisterRequest
     {
         [Required]
-        [MaxLength(100)]
         public string FullName { get; set; } = string.Empty;
 
         [Required]
@@ -13,10 +13,10 @@ namespace HandmadeShop.Application.DTOs.User
         public string Email { get; set; } = string.Empty;
 
         [Required]
-        [MaxLength(20)]
         public string Password { get; set; } = string.Empty;
 
-        public string? Address { get; set; }
-        //public IFormFile AvatarURL { get; set; }
+        public string? PhoneNumber { get; set; } = string.Empty;
+        public string? Address { get; set; } = string.Empty;
+        public IFormFile? AvatarURL { get; set; } = null;
     }
 }

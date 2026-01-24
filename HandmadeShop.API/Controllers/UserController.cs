@@ -15,11 +15,18 @@ namespace HandmadeShop.API.Controllers
             _userService = userService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddNewUser(CreateUserRequest request)
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(LoginRequest request)
         {
-            await _userService.CreateUserAsync(request);
-            return StatusCode(StatusCodes.Status201Created, new { message = "Create new user successfully !" });
+            var token = await _userService.LoginAsync(request);
+            return Ok(token);
+        }
+
+        [HttpPost("Register")]
+        public async Task<IActionResult> Register([FromForm] RegisterRequest request)
+        {
+            await _userService.RegisterAsync(request);
+            return NoContent();
         }
     }
 }

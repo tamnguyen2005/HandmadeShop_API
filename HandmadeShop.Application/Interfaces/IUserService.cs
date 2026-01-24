@@ -4,6 +4,8 @@ namespace HandmadeShop.Application.Interfaces
 {
     public interface IUserService
     {
-        Task CreateUserAsync(CreateUserRequest request);
+        Task<string> LoginAsync(LoginRequest request);
+
+        Task RegisterAsync(RegisterRequest request);
     }
 }
