@@ -1,5 +1,6 @@
 ﻿using HandmadeShop.Application.DTOs.Order;
 using HandmadeShop.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HandmadeShop.API.Controllers
@@ -15,6 +16,7 @@ namespace HandmadeShop.API.Controllers
             _orderService = orderService;
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddNewOrder(CreateOrderRequest request)
         {
