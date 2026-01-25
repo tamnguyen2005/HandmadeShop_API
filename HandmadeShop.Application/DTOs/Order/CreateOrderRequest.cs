@@ -2,7 +2,6 @@
 {
     public class CreateOrderRequest
     {
-        public Guid UserId { get; set; }
         public string? Address { get; set; }
         public string? CouponCode { get; set; }
         public List<CreateOrderItemRequest> Items { get; set; } = new List<CreateOrderItemRequest>();

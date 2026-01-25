@@ -1,6 +1,7 @@
 ﻿using HandmadeShop.Application.DTOs.Order;
 using HandmadeShop.Application.Features.Orders.Events;
 using HandmadeShop.Application.Interfaces;
+using HandmadeShop.Application.Patterns.Adapter;
 using HandmadeShop.Application.Patterns.Factories;
 using HandmadeShop.Application.Patterns.Observers;
 using HandmadeShop.Application.Patterns.States;
@@ -13,11 +14,13 @@ namespace HandmadeShop.Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly EventDispatcher _dispatcher;
+        private readonly ICurrentUserService _currentUserService;
 
-        public OrderService(IUnitOfWork unitOfWork, EventDispatcher eventDispatcher)
+        public OrderService(IUnitOfWork unitOfWork, EventDispatcher eventDispatcher, ICurrentUserService currentUserService)
         {
             _unitOfWork = unitOfWork;
             _dispatcher = eventDispatcher;
+            _currentUserService = currentUserService;
         }
 
         public async Task UpdateOrderStatusAsync(Guid id, string action)
@@ -42,7 +45,13 @@ namespace HandmadeShop.Application.Services
         {
             var orderItems = new List<OrderItem>();
             decimal totalAmount = 0;
-            var user = await _unitOfWork.Users.GetByIdAsync(request.UserId);
+            var userIdString = _currentUserService.UserId;
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                throw new UnauthorizedAccessException("Please log in first !");
+            }
+            var userId = Guid.Parse(userIdString);
+            var user = await _unitOfWork.Users.GetByIdAsync(userId);
             if (user == null)
                 throw new KeyNotFoundException("User does not exist !");
             // Tạo order item
@@ -82,7 +91,7 @@ namespace HandmadeShop.Application.Services
             // Tính tiền Tạo order mới
             var order = new Order()
             {
-                UserId = request.UserId,
+                UserId = user.Id,
                 TotalAmount = totalAmount,
                 ShippingAddress = !string.IsNullOrEmpty(request.Address) ?
                                    request.Address : user.Address ?? "Tại cửa hàng",
@@ -90,6 +99,10 @@ namespace HandmadeShop.Application.Services
                 Status = "Pending",
                 Items = orderItems
             };
+            IPaymentService _paymentService = PaymentFactory.GetPaymentMethod(request.PaymentMethod);
+            bool isPaid = await _paymentService.PayAsync(totalAmount, $"{order.Id}");
+            if (!isPaid)
+                throw new Exception("Transaction failed !");
             await _unitOfWork.Orders.AddAsync(order);
             await _dispatcher.PublishAsync(new OrderCreatedEvent(order));
             await _unitOfWork.SaveChangesAsync();

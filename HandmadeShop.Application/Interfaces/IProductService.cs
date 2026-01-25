@@ -7,5 +7,7 @@ namespace HandmadeShop.Application.Interfaces
         Task CreateProductAsync(CreateProductRequest request);
 
         Task<ProductResponse?> GetProductByIdAsync(Guid id);
+
+        Task<List<ProductResponse>> GetAllProductAsync(QueryProductRequest request);
     }
 }

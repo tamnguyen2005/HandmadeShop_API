@@ -1,7 +1,9 @@
 ﻿using HandmadeShop.API.Middlewares;
+using HandmadeShop.API.Services;
 using HandmadeShop.Application.Features.Inventory;
 using HandmadeShop.Application.Features.Orders.Events;
 using HandmadeShop.Application.Interfaces;
+using HandmadeShop.Application.Patterns.Decorators;
 using HandmadeShop.Application.Patterns.Observers;
 using HandmadeShop.Application.Services;
 using HandmadeShop.Infrastructure.Persistence;
@@ -10,6 +12,7 @@ using HandmadeShop.Infrastructure.Repository;
 using HandmadeShop.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -20,7 +23,6 @@ builder.Services.AddDbContext<HandmadeShopDBContext>(option => option.UseSqlServ
 // UnitOfWork Service
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<EventDispatcher>();
@@ -28,6 +30,16 @@ builder.Services.AddScoped<IHandmadeObserver<OrderCreatedEvent>, InventoryHandle
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<IProductService>(provider =>
+{
+    var innerService = provider.GetRequiredService<ProductService>();
+    var cache = provider.GetRequiredService<IMemoryCache>();
+    return new CacheProductService(innerService, cache);
+});
 // Add services to the container.
 
 builder.Services.AddControllers();

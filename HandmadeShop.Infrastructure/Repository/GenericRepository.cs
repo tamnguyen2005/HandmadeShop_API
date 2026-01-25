@@ -21,6 +21,11 @@ namespace HandmadeShop.Infrastructure.Repository
             await _dbSet.AddAsync(entity);
         }
 
+        public IQueryable<T> AsQueryable()
+        {
+            return _dbSet.AsQueryable();
+        }
+
         public void Delete(T entity)
         {
             _dbSet.Remove(entity);
