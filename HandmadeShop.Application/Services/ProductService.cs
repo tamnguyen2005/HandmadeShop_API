@@ -1,6 +1,7 @@
 ﻿using HandmadeShop.Application.DTOs.Product;
 using HandmadeShop.Application.Interfaces;
 using HandmadeShop.Application.Patterns.Builders;
+using Microsoft.EntityFrameworkCore;
 
 namespace HandmadeShop.Application.Services
 {
@@ -30,6 +31,36 @@ namespace HandmadeShop.Application.Services
             await _unitOfWork.SaveChangesAsync();
         }
 
+        public async Task<List<ProductResponse>> GetAllProductAsync(QueryProductRequest request)
+        {
+            var queryable = _unitOfWork.Products.AsQueryable();
+            if (!string.IsNullOrEmpty(request.Name))
+                queryable = queryable.Where(p => p.Name.Contains(request.Name));
+            if (request.BasePrice.HasValue)
+                queryable = queryable.Where(p => p.BasePrice > request.BasePrice);
+            var pageNumber = request.PageNumber ?? 1;
+            var pageSize = request.PageSize ?? 10;
+            var result = await queryable.OrderBy(p => p.Id)
+                                       .Skip((pageNumber - 1) * pageSize)
+                                       .Take(pageSize)
+                                       .Select(p => new ProductResponse()
+                                       {
+                                           Id = p.Id,
+                                           Name = p.Name,
+                                           Description = p.Description,
+                                           BasePrice = p.BasePrice,
+                                           StockQuantity = p.StockQuantity,
+                                           ImageURL = p.ImageURL,
+                                           CategoryName = p.Category.Name,
+                                           Options = p.Options.Select(o => new ProductOptionResponse()
+                                           {
+                                               Name = o.Name,
+                                               Values = o.Values.Select(v => v.Value).ToList()
+                                           }).ToList()
+                                       }).ToListAsync();
+            return result;
+        }
+
         public async Task<ProductResponse?> GetProductByIdAsync(Guid id)
         {
             var product = await _unitOfWork.Products.GetProductWithDetailAsync(id);
@@ -42,7 +73,7 @@ namespace HandmadeShop.Application.Services
                 Description = product.Description,
                 BasePrice = product.BasePrice,
                 StockQuantity = product.StockQuantity,
-                ImageURL = "",
+                ImageURL = product.ImageURL,
                 CategoryName = product.Category.Name,
                 Options = product.Options
                 .Select(o => new ProductOptionResponse()

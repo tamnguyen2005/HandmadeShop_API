@@ -28,5 +28,12 @@ namespace HandmadeShop.API.Controllers
             var product = await _productService.GetProductByIdAsync(id);
             return Ok(product);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllProduct([FromQuery] QueryProductRequest request)
+        {
+            var result = await _productService.GetAllProductAsync(request);
+            return Ok(result);
+        }
     }
 }
