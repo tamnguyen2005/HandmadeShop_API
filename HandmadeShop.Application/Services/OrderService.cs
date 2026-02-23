@@ -1,5 +1,5 @@
 ﻿using HandmadeShop.Application.DTOs.Order;
-using HandmadeShop.Application.Features.Orders.Events;
+using HandmadeShop.Application.Events.Orders;
 using HandmadeShop.Application.Interfaces;
 using HandmadeShop.Application.Patterns.Adapter;
 using HandmadeShop.Application.Patterns.Factories;
@@ -105,6 +105,40 @@ namespace HandmadeShop.Application.Services
                 throw new Exception("Transaction failed !");
             await _unitOfWork.Orders.AddAsync(order);
             await _dispatcher.PublishAsync(new OrderCreatedEvent(order));
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<List<OrderResponse>> GetAllUserOrderAsync()
+        {
+            var userIdString = _currentUserService.UserId;
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                throw new UnauthorizedAccessException("Please log in first !");
+            }
+            var userId = Guid.Parse(userIdString);
+            var orders = await _unitOfWork.Orders.FindAsync(o => o.UserId == userId && o.IsDeleted == false);
+            var result = orders.Select(o => new OrderResponse()
+            {
+                Id = o.Id,
+                OrderDate = o.OrderDate,
+                TotalAmount = o.TotalAmount,
+                PaymentMethod = o.PaymentMethod,
+                Status = o.Status,
+            }).ToList();
+            return result;
+        }
+
+        public async Task<OrderDetailResponse> GetOrderDetailAsync(Guid id)
+        {
+            return await _unitOfWork.Orders.GetOrderByIdAsync(id);
+        }
+
+        public async Task DeleteOrder(Guid id)
+        {
+            var order = await _unitOfWork.Orders.GetByIdAsync(id);
+            if (order == null || order.IsDeleted)
+                throw new KeyNotFoundException("Order does not exist !");
+            order.IsDeleted = true;
             await _unitOfWork.SaveChangesAsync();
         }
     }

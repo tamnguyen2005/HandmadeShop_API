@@ -25,5 +25,31 @@ namespace HandmadeShop.API.Controllers
             await _categoryService.AddCategoryAsync(request);
             return StatusCode(StatusCodes.Status201Created, new { message = "Create new category succeccfully !" });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllCategory()
+        {
+            return Ok(await _categoryService.GetAllCategoryAsync());
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCategoryById(Guid id)
+        {
+            return Ok(await _categoryService.GetCategoryByIdAsync(id));
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateCategory(Guid id, UpdateCategoryRequest request)
+        {
+            await _categoryService.UpdateCategoryAsync(id, request);
+            return NoContent();
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteCategory(Guid id)
+        {
+            await _categoryService.DeleteCategoryAsync(id);
+            return NoContent();
+        }
     }
 }

@@ -20,6 +20,11 @@ namespace HandmadeShop.Application.Patterns.Decorators
             await _innerService.CreateProductAsync(request);
         }
 
+        public async Task DeleteProduct(Guid id)
+        {
+            await _innerService.DeleteProduct(id);
+        }
+
         public async Task<List<ProductResponse>> GetAllProductAsync(QueryProductRequest request)
         {
             string key = $"p_page{request.PageNumber}";
@@ -46,6 +51,11 @@ namespace HandmadeShop.Application.Patterns.Decorators
             var data = await _innerService.GetProductByIdAsync(id);
             _cache.Set(key, data, TimeSpan.FromMinutes(5));
             return data;
+        }
+
+        public async Task UpdateProductAsync(Guid id, UpdateProductRequest request)
+        {
+            await _innerService.UpdateProductAsync(id, request);
         }
     }
 }

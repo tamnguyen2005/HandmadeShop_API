@@ -8,14 +8,15 @@ namespace HandmadeShop.Infrastructure.Repository
     {
         private readonly HandmadeShopDBContext _context;
         private GenericRepository<AppUser>? users;
-        private GenericRepository<Category>? categories;
-        private GenericRepository<Order>? orders;
+        private CategoryRepository? categories;
+        private OrderRepository? orders;
         private GenericRepository<OrderHistory>? orderHistories;
         private ProductRepository? products;
         private GenericRepository<OrderItem>? orderItems;
         private GenericRepository<ProductOption>? productOptions;
         private GenericRepository<ProductOptionValue>? productOptionValues;
         private GenericRepository<Coupon>? coupons;
+        private GenericRepository<Review> reviews;
 
         public UnitOfWork(HandmadeShopDBContext context)
         {
@@ -32,23 +33,23 @@ namespace HandmadeShop.Infrastructure.Repository
             }
         }
 
-        public IGenericRepository<Category> Categories
+        public ICategoryRepository Categories
         {
             get
             {
                 if (categories == null)
-                    categories = new GenericRepository<Category>(_context);
+                    categories = new CategoryRepository(_context);
                 return categories;
             }
         }
 
-        public IGenericRepository<Order> Orders
+        public IOrderRepository Orders
         {
             get
             {
                 if (orders == null)
                 {
-                    orders = new GenericRepository<Order>(_context);
+                    orders = new OrderRepository(_context);
                 }
                 return orders;
             }
@@ -123,6 +124,16 @@ namespace HandmadeShop.Infrastructure.Repository
                     coupons = new GenericRepository<Coupon>(_context);
                 }
                 return coupons;
+            }
+        }
+
+        public IGenericRepository<Review> Reviews
+        {
+            get
+            {
+                if (reviews == null)
+                    reviews = new GenericRepository<Review>(_context);
+                return reviews;
             }
         }
 

@@ -1,8 +1,9 @@
-﻿using HandmadeShop.Domain.Entities;
+﻿using HandmadeShop.Application.Interfaces;
+using HandmadeShop.Domain.Entities;
 
 namespace HandmadeShop.Application.Patterns.Builders
 {
-    public class ProductBuilder
+    public class ProductBuilder : IProductBuilder
     {
         private Product _product;
 
@@ -15,7 +16,7 @@ namespace HandmadeShop.Application.Patterns.Builders
             };
         }
 
-        public ProductBuilder WithBaseInfo(string name
+        public IProductBuilder WithBaseInfo(string name
                                           , string description
                                           , decimal basePrice
                                           , int stockQuantity
@@ -29,7 +30,13 @@ namespace HandmadeShop.Application.Patterns.Builders
             return this;
         }
 
-        public ProductBuilder AddOption(string optionName, List<string> value)
+        public IProductBuilder AddImageURL(string url)
+        {
+            _product.ImageURL = url;
+            return this;
+        }
+
+        public IProductBuilder AddOption(string optionName, List<string> value)
         {
             var option = new ProductOption()
             {

@@ -1,7 +1,7 @@
 ﻿using HandmadeShop.Application.Patterns.Observers;
 using HandmadeShop.Domain.Entities;
 
-namespace HandmadeShop.Application.Features.Orders.Events
+namespace HandmadeShop.Application.Events.Orders
 {
     public class OrderCreatedEvent : IDomainEvent
     {
