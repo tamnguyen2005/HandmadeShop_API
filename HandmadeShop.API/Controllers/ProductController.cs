@@ -35,5 +35,19 @@ namespace HandmadeShop.API.Controllers
             var result = await _productService.GetAllProductAsync(request);
             return Ok(result);
         }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateProduct(Guid id, [FromForm] UpdateProductRequest request)
+        {
+            await _productService.UpdateProductAsync(id, request);
+            return NoContent();
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteProduct(Guid id)
+        {
+            await _productService.DeleteProduct(id);
+            return NoContent();
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using HandmadeShop.Application.Features.Orders.Events;
+﻿using HandmadeShop.Application.Events.Orders;
 using HandmadeShop.Application.Interfaces;
 using HandmadeShop.Application.Patterns.Observers;
 

@@ -1,17 +1,19 @@
 ﻿using HandmadeShop.Application.DTOs.Product;
+using HandmadeShop.Application.DTOs.Review;
 using HandmadeShop.Application.Interfaces;
 using HandmadeShop.Application.Patterns.Builders;
-using Microsoft.EntityFrameworkCore;
 
 namespace HandmadeShop.Application.Services
 {
     public class ProductService : IProductService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IPhotoService _photoService;
 
-        public ProductService(IUnitOfWork unitOfWork)
+        public ProductService(IUnitOfWork unitOfWork, IPhotoService photoService)
         {
             _unitOfWork = unitOfWork;
+            _photoService = photoService;
         }
 
         public async Task CreateProductAsync(CreateProductRequest request)
@@ -21,10 +23,16 @@ namespace HandmadeShop.Application.Services
             {
                 throw new KeyNotFoundException("Category does not exist !");
             }
-            var builder = new ProductBuilder().WithBaseInfo(request.Name, request.Description, request.BasePrice, request.StockQuantity, request.CategoryId);
+            var builder = new ProductBuilder()
+                .WithBaseInfo(request.Name, request.Description, request.BasePrice, request.StockQuantity, request.CategoryId);
             foreach (var o in request.Options)
             {
                 builder.AddOption(o.Name, o.Values);
+            }
+            if (request.ImageURL != null && request.ImageURL.Length > 0)
+            {
+                var url = await _photoService.UploadAsync(request.ImageURL);
+                builder.AddImageURL(url);
             }
             var product = builder.Build();
             await _unitOfWork.Products.AddAsync(product);
@@ -33,31 +41,20 @@ namespace HandmadeShop.Application.Services
 
         public async Task<List<ProductResponse>> GetAllProductAsync(QueryProductRequest request)
         {
-            var queryable = _unitOfWork.Products.AsQueryable();
-            if (!string.IsNullOrEmpty(request.Name))
-                queryable = queryable.Where(p => p.Name.Contains(request.Name));
-            if (request.BasePrice.HasValue)
-                queryable = queryable.Where(p => p.BasePrice > request.BasePrice);
-            var pageNumber = request.PageNumber ?? 1;
-            var pageSize = request.PageSize ?? 10;
-            var result = await queryable.OrderBy(p => p.Id)
-                                       .Skip((pageNumber - 1) * pageSize)
-                                       .Take(pageSize)
-                                       .Select(p => new ProductResponse()
-                                       {
-                                           Id = p.Id,
-                                           Name = p.Name,
-                                           Description = p.Description,
-                                           BasePrice = p.BasePrice,
-                                           StockQuantity = p.StockQuantity,
-                                           ImageURL = p.ImageURL,
-                                           CategoryName = p.Category.Name,
-                                           Options = p.Options.Select(o => new ProductOptionResponse()
-                                           {
-                                               Name = o.Name,
-                                               Values = o.Values.Select(v => v.Value).ToList()
-                                           }).ToList()
-                                       }).ToListAsync();
+            var products = await _unitOfWork.Products.GetAllProductAsync(request);
+            var result = products.Select(
+                p => new ProductResponse()
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    BasePrice = p.BasePrice,
+                    StockQuantity = p.StockQuantity,
+                    ImageURL = p.ImageURL,
+                    CategoryName = p.Category.Name,
+                    AverageReview = p.AverageRating,
+                    ReviewCount = p.ReviewCount,
+                }).ToList();
             return result;
         }
 
@@ -75,6 +72,16 @@ namespace HandmadeShop.Application.Services
                 StockQuantity = product.StockQuantity,
                 ImageURL = product.ImageURL,
                 CategoryName = product.Category.Name,
+                ReviewCount = product.ReviewCount,
+                AverageReview = product.AverageRating,
+                Reviews = product.Reviews
+                .Select(r => new ReviewResponse()
+                {
+                    Rating = r.Rating,
+                    Content = r.Content,
+                    UserName = r.UserName,
+                    ImageURL = r.ImageURL ?? null
+                }).ToList(),
                 Options = product.Options
                 .Select(o => new ProductOptionResponse()
                 {
@@ -82,6 +89,24 @@ namespace HandmadeShop.Application.Services
                     Values = o.Values.Select(v => v.Value).ToList()
                 }).ToList()
             };
+        }
+
+        public async Task UpdateProductAsync(Guid id, UpdateProductRequest request)
+        {
+            var url = string.Empty;
+            if (request.ImageURL != null && request.ImageURL.Length > 0)
+                url = await _photoService.UploadAsync(request.ImageURL);
+            await _unitOfWork.Products.UpdateProductAsync(id, url, request);
+        }
+
+        public async Task DeleteProduct(Guid id)
+        {
+            var product = await _unitOfWork.Products.GetByIdAsync(id);
+            if (product == null)
+                throw new KeyNotFoundException("Product does not exist !");
+            product.IsDeleted = true;
+            _unitOfWork.Products.Update(product);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

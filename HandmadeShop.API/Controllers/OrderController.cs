@@ -30,5 +30,17 @@ namespace HandmadeShop.API.Controllers
             await _orderService.UpdateOrderStatusAsync(id, status);
             return NoContent();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllUserOrder()
+        {
+            return Ok(await _orderService.GetAllUserOrderAsync());
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetOrderDetailById(Guid id)
+        {
+            return Ok(await _orderService.GetOrderDetailAsync(id));
+        }
     }
 }
