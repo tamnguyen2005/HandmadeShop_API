@@ -31,13 +31,18 @@ Follow these instructions to get a copy of the project up and running on your lo
    ```bash
    git clone https://github.com/your-username/handmade-shop-api.git
 2. Build and run the project using Docker Compose:
-	docker-compose up -d --build
+   ```bash
+   docker-compose up -d --build
 Note: The API will be available at http://localhost:5000/swagger.
+
 📡 API Endpoints Overview
 Here is a quick overview of the main API resources:
+
 Method,Endpoint,Description,Auth Required
 POST,/api/auth/login,Authenticate user and get JWT,No
 POST,/api/auth/register,Register a new user,No
 GET,/api/products,Get list of products,No
 GET,/api/cart,Get current user's Redis cart,Yes
 POST,/api/cart,Add item to Redis cart,Yes
+
+Note: Real-time connections are handled via /chatHub and /notificationHub using WebSockets.
