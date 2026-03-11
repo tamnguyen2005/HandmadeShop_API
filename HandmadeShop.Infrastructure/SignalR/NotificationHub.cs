@@ -1,9 +1,11 @@
 ﻿using HandmadeShop.Application.Patterns.Singleton;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
 
 namespace HandmadeShop.Infrastructure.SignalR
 {
+    [Authorize]
     public class NotificationHub : Hub
     {
         private readonly UserConnectionManager _userConnectionManager;

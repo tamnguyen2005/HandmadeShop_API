@@ -10,7 +10,7 @@ namespace HandmadeShop.Application.Specifications
                   (string.IsNullOrEmpty(request.Name) || x.Name.Contains(request.Name)) &&
                   (!request.CategoryId.HasValue || x.CategoryId == request.CategoryId))
         {
-            Includes.Add(x => x.Category);
+            //Includes.Add(x => x.Category);
             switch (request.Sort)
             {
                 case "priceAsc": AddOrderBy(x => x.BasePrice); break;

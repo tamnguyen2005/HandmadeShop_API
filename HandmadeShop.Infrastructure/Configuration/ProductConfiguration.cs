@@ -14,6 +14,7 @@ namespace HandmadeShop.Infrastructure.Configuration
             builder.HasKey(p => p.Id);
             // Thuoc tinh
             builder.Property(p => p.Name).HasMaxLength(100).IsRequired();
+            builder.Property(p => p.StoryBehind).IsRequired();
             builder.Property(p => p.BasePrice).HasColumnType("decimal(18,2)").IsRequired();
             // Khoa ngoai
             builder.HasOne(p => p.Category)

@@ -1,7 +1,7 @@
 ﻿using HandmadeShop.Application.DTOs.Product;
-using HandmadeShop.Application.DTOs.Review;
 using HandmadeShop.Application.Interfaces;
 using HandmadeShop.Application.Patterns.Builders;
+using System.Text.Json;
 
 namespace HandmadeShop.Application.Services
 {
@@ -18,14 +18,26 @@ namespace HandmadeShop.Application.Services
 
         public async Task CreateProductAsync(CreateProductRequest request)
         {
-            var category = _unitOfWork.Categories.GetByIdAsync(request.CategoryId);
+            var category = await _unitOfWork.Categories.GetByIdAsync(request.CategoryId);
             if (category == null)
             {
                 throw new KeyNotFoundException("Category does not exist !");
             }
             var builder = new ProductBuilder()
-                .WithBaseInfo(request.Name, request.Description, request.BasePrice, request.StockQuantity, request.CategoryId);
-            foreach (var o in request.Options)
+                .WithBaseInfo(request.Name, request.Description, request.BasePrice, request.StockQuantity, request.StoryBehind, request.CategoryId);
+            var options = new List<CreateProductOptionRequest>();
+            try
+            {
+                foreach (var i in request.Options)
+                {
+                    options.Add(JsonSerializer.Deserialize<CreateProductOptionRequest>(i));
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            foreach (var o in options)
             {
                 builder.AddOption(o.Name, o.Values);
             }
@@ -47,13 +59,9 @@ namespace HandmadeShop.Application.Services
                 {
                     Id = p.Id,
                     Name = p.Name,
-                    Description = p.Description,
+                    //Description = p.Description,
                     BasePrice = p.BasePrice,
-                    StockQuantity = p.StockQuantity,
                     ImageURL = p.ImageURL,
-                    CategoryName = p.Category.Name,
-                    AverageReview = p.AverageRating,
-                    ReviewCount = p.ReviewCount,
                 }).ToList();
             return result;
         }
@@ -69,19 +77,20 @@ namespace HandmadeShop.Application.Services
                 Name = product.Name,
                 Description = product.Description,
                 BasePrice = product.BasePrice,
-                StockQuantity = product.StockQuantity,
+                //StockQuantity = product.StockQuantity,
                 ImageURL = product.ImageURL,
                 CategoryName = product.Category.Name,
-                ReviewCount = product.ReviewCount,
-                AverageReview = product.AverageRating,
-                Reviews = product.Reviews
-                .Select(r => new ReviewResponse()
-                {
-                    Rating = r.Rating,
-                    Content = r.Content,
-                    UserName = r.UserName,
-                    ImageURL = r.ImageURL ?? null
-                }).ToList(),
+                StoryBehind = product.StoryBehind,
+                //ReviewCount = product.ReviewCount,
+                //AverageReview = product.AverageRating,
+                //Reviews = product.Reviews
+                //.Select(r => new ReviewResponse()
+                //{
+                //    Rating = r.Rating,
+                //    Content = r.Content,
+                //    UserName = r.UserName,
+                //    ImageURL = r.ImageURL ?? null
+                //}).ToList(),
                 Options = product.Options
                 .Select(o => new ProductOptionResponse()
                 {

@@ -1,15 +1,14 @@
 ﻿using HandmadeShop.Application.DTOs.Product;
 using HandmadeShop.Application.Interfaces;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace HandmadeShop.Application.Patterns.Decorators
 {
     public class CacheProductService : IProductService
     {
         private readonly IProductService _innerService;
-        private readonly IMemoryCache _cache;
+        private readonly ICacheService _cache;
 
-        public CacheProductService(IProductService innerService, IMemoryCache cache)
+        public CacheProductService(IProductService innerService, ICacheService cache)
         {
             _innerService = innerService;
             _cache = cache;
@@ -28,28 +27,30 @@ namespace HandmadeShop.Application.Patterns.Decorators
         public async Task<List<ProductResponse>> GetAllProductAsync(QueryProductRequest request)
         {
             string key = $"p_page{request.PageNumber}";
-            if (_cache.TryGetValue(key, out List<ProductResponse> cache))
+            var data = await _cache.GetAsync<List<ProductResponse>>(key);
+            if (data == null)
             {
-                Console.WriteLine("[CACHE-HIT]");
-                return cache;
+                Console.WriteLine("CACHE-MISS");
+                data = await _innerService.GetAllProductAsync(request);
+                await _cache.SetAsync(key, data, TimeSpan.FromHours(1));
             }
-            Console.WriteLine("[CACHE-MISS]");
-            var data = await _innerService.GetAllProductAsync(request);
-            _cache.Set(key, data, TimeSpan.FromMinutes(5));
+            else
+                Console.WriteLine("CACHE-HIT");
             return data;
         }
 
         public async Task<ProductResponse?> GetProductByIdAsync(Guid id)
         {
             string key = $"p_{id}";
-            if (_cache.TryGetValue(key, out ProductResponse cacheProduct))
+            var data = await _cache.GetAsync<ProductResponse>(key);
+            if (data == null)
             {
-                Console.WriteLine("[CACHE-HIT]");
-                return cacheProduct;
+                Console.WriteLine("CACHE-MISS");
+                data = await _innerService.GetProductByIdAsync(id);
+                await _cache.SetAsync(key, data, TimeSpan.FromHours(1));
             }
-            Console.WriteLine("CACHE-MISS");
-            var data = await _innerService.GetProductByIdAsync(id);
-            _cache.Set(key, data, TimeSpan.FromMinutes(5));
+            else
+                Console.WriteLine("CACHE-HIT");
             return data;
         }
 

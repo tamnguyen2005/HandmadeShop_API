@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace HandmadeShop.Application.DTOs.Category
 {
@@ -7,7 +8,9 @@ namespace HandmadeShop.Application.DTOs.Category
         [Required]
         public string Name { get; set; } = string.Empty;
 
+        public bool IsCollection { get; set; }
         public string? Description { get; set; }
         public Guid? ParentId { get; set; }
+        public IFormFile? Image { get; set; }
     }
 }

@@ -64,6 +64,7 @@ namespace HandmadeShop.Application.Services
                 {
                     ProductId = i.ProductId,
                     ProductName = product.Name,
+                    ImageURL = product.ImageURL,
                     UnitPrice = product.BasePrice,
                     Quantity = i.Quantity,
                     Configuration = i.Configuration,
@@ -130,7 +131,28 @@ namespace HandmadeShop.Application.Services
 
         public async Task<OrderDetailResponse> GetOrderDetailAsync(Guid id)
         {
-            return await _unitOfWork.Orders.GetOrderByIdAsync(id);
+            var order = await _unitOfWork.Orders.GetOrderByIdAsync(id);
+            if (order == null)
+                throw new KeyNotFoundException("Order does not exist");
+            var response = new OrderDetailResponse()
+            {
+                Id = id,
+                OrderDate = order.OrderDate,
+                TotalAmount = order.TotalAmount,
+                ShippingAddress = order.ShippingAddress,
+                PaymentMethod = order.PaymentMethod,
+                Status = order.Status,
+                Products = order.Items.Select(i => new MiniProductResponse()
+                {
+                    Id = i.Id,
+                    Name = i.ProductName,
+                    Quantity = i.Quantity,
+                    ImageURL = i.ImageURL,
+                    UnitPrice = i.UnitPrice,
+                    Configurations = i.Configuration,
+                }).ToList()
+            };
+            return response;
         }
 
         public async Task DeleteOrder(Guid id)

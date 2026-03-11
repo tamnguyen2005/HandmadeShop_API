@@ -8,6 +8,7 @@ namespace HandmadeShop.Application.Interfaces
                                    , string description
                                    , decimal basePrice
                                    , int stockQuantity
+                                   , string storyBehind
                                    , Guid categoryId);
 
         IProductBuilder AddOption(string optionName, List<string> value);

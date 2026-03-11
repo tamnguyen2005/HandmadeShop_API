@@ -11,7 +11,7 @@
 
         public decimal CaculateDiscount(decimal originalPrice)
         {
-            return _percenttage * originalPrice;
+            return (_percenttage * originalPrice) / 100;
         }
     }
 }
