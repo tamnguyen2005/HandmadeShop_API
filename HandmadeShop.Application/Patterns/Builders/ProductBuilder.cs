@@ -20,6 +20,7 @@ namespace HandmadeShop.Application.Patterns.Builders
                                           , string description
                                           , decimal basePrice
                                           , int stockQuantity
+                                          , string storyBehind
                                           , Guid categoryId)
         {
             _product.Name = name;
@@ -27,6 +28,7 @@ namespace HandmadeShop.Application.Patterns.Builders
             _product.BasePrice = basePrice;
             _product.StockQuantity = stockQuantity;
             _product.CategoryId = categoryId;
+            _product.StoryBehind = storyBehind;
             return this;
         }
 

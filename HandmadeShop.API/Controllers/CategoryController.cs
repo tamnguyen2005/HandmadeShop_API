@@ -16,7 +16,7 @@ namespace HandmadeShop.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddNewCategory(CreateCategoryRequest request)
+        public async Task<IActionResult> AddNewCategory([FromForm] CreateCategoryRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -30,6 +30,13 @@ namespace HandmadeShop.API.Controllers
         public async Task<IActionResult> GetAllCategory()
         {
             return Ok(await _categoryService.GetAllCategoryAsync());
+        }
+
+        [HttpGet("Collection")]
+        public async Task<IActionResult> GetAllCollection()
+        {
+            var collections = await _categoryService.GetAllCollectionAsync();
+            return Ok(collections);
         }
 
         [HttpGet("{id}")]

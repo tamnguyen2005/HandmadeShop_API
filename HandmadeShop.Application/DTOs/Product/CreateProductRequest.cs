@@ -24,6 +24,9 @@ namespace HandmadeShop.Application.DTOs.Product
         [Required]
         public Guid CategoryId { get; set; }
 
-        public List<CreateProductOptionDTO> Options { get; set; } = new List<CreateProductOptionDTO>();
+        [Required]
+        public string StoryBehind { get; set; }
+
+        public List<string> Options { get; set; } = new List<string>();
     }
 }

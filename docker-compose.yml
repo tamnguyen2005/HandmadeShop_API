@@ -1,4 +1,4 @@
-services:
+﻿services:
   sql_server:
     container_name: handmade_sql
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -9,5 +9,27 @@ services:
         - "1433:1433"
     volumes:
         - sql_data:/var/opt/mssql 
+  redis:
+    container_name: handmade_redis
+    image: redis:alpine
+    ports:
+        - "6379:6379"
+    restart: always
+  web_api:
+    image: handmadeshop-api-image
+    container_name: handmadeshop_api_container
+    build: 
+        context: .
+        dockerfile: Dockerfile
+    ports:
+        - "5000:8080"
+    restart: on-failure
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development 
+      - ConnectionStrings__DefaultConnection=Server=sql_server;Database=HandmadeShopDB;User ID=sa;Password=Password123@;TrustServerCertificate=True;
+      - ConnectionStrings__RedisConnection=redis:6379
+    depends_on:
+      - sql_server 
+      - redis 
 volumes:
  sql_data:

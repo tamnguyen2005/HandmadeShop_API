@@ -8,6 +8,8 @@ namespace HandmadeShop.Application.Interfaces
 
         Task<List<CategoryResponse>> GetAllCategoryAsync();
 
+        Task<List<CategoryResponse>> GetAllCollectionAsync();
+
         Task<DetailCategoryResponse> GetCategoryByIdAsync(Guid id);
 
         Task UpdateCategoryAsync(Guid id, UpdateCategoryRequest request);

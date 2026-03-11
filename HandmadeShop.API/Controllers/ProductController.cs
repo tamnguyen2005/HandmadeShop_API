@@ -16,7 +16,7 @@ namespace HandmadeShop.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddNewProduct(CreateProductRequest request)
+        public async Task<IActionResult> AddNewProduct([FromForm] CreateProductRequest request)
         {
             await _productService.CreateProductAsync(request);
             return StatusCode(StatusCodes.Status201Created, new { message = "Create new product successfully !" });

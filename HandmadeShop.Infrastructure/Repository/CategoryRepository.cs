@@ -1,5 +1,4 @@
-﻿using HandmadeShop.Application.DTOs.Category;
-using HandmadeShop.Application.Interfaces;
+﻿using HandmadeShop.Application.Interfaces;
 using HandmadeShop.Domain.Entities;
 using HandmadeShop.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -15,42 +14,23 @@ namespace HandmadeShop.Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<DetailCategoryResponse> GetCategoryByIdAsync(Guid id)
+        public async Task<List<Category>> GetAllCategoryAsync()
         {
-            var category = await _context.Categories.Include(c => c.Products)
-                                                  .Include(c => c.SubCategories)
-                                                  .FirstOrDefaultAsync();
-            if (category == null || category.IsDeleted)
-                throw new KeyNotFoundException("Category does not exist !");
-            var products = new List<MiniProductResponse>();
-            if (category.Products != null && category.Products.Count != 0)
-            {
-                foreach (var product in category.Products)
-                {
-                    products.Add(new MiniProductResponse()
-                    {
-                        Id = product.Id,
-                        Name = product.Name,
-                        BasePrice = product.BasePrice,
-                        ImageURL = product.ImageURL,
-                    });
-                }
-            }
-            var result = new DetailCategoryResponse()
-            {
-                Id = category.Id,
-                Name = category.Name,
-                SubCategory = category.SubCategories == null
-                                    ? new List<CategoryResponse>()
-                                    : category.SubCategories.Where(s => s.IsDeleted == false).Select(s => new CategoryResponse()
-                                    {
-                                        Id = s.Id,
-                                        Name = s.Name
-                                    })
-                                    .ToList(),
-                Products = products
-            };
-            return result;
+            var categories = await _context.Categories.Where(c => c.ParentId == null).ToListAsync();
+            return categories;
+        }
+
+        public async Task<List<Category>> GetALlCollectionAsync()
+        {
+            var categories = await _context.Categories.Where(c => c.IsCollection == true && c.IsDeleted == false).ToListAsync();
+            return categories;
+        }
+
+        public async Task<Category?> GetCategoryByIdAsync(Guid id)
+        {
+            var category = await _context.Categories.Include(c => c.SubCategories)
+                                                    .FirstOrDefaultAsync();
+            return category;
         }
     }
 }

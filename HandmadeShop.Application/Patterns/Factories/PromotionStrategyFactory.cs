@@ -10,10 +10,11 @@ namespace HandmadeShop.Application.Patterns.Factories
             if (!coupon.IsActive) return null;
             if (coupon.ExpiryDate.HasValue && coupon.ExpiryDate < DateTime.UtcNow) return null;
             if (coupon.UsageCount >= coupon.UsageLimit) return null;
+            coupon.Type = coupon.Type.ToLower();
             return coupon.Type switch
             {
-                "Percentage" => new PercentagePromotionStrategy(coupon.Value),
-                "Fixed" => new FixedAmountPromotionStrategy(coupon.Value),
+                "percentage" => new PercentagePromotionStrategy(coupon.Value),
+                "fixed" => new FixedAmountPromotionStrategy(coupon.Value),
                 _ => null
             };
         }

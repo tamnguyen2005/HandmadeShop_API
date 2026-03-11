@@ -92,6 +92,12 @@ namespace HandmadeShop.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImageURL")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsCollection")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -257,6 +263,10 @@ namespace HandmadeShop.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("ImageURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -294,9 +304,6 @@ namespace HandmadeShop.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double>("AverageRating")
-                        .HasColumnType("float");
-
                     b.Property<decimal>("BasePrice")
                         .HasColumnType("decimal(18,2)");
 
@@ -325,11 +332,12 @@ namespace HandmadeShop.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("ReviewCount")
-                        .HasColumnType("int");
-
                     b.Property<int>("StockQuantity")
                         .HasColumnType("int");
+
+                    b.Property<string>("StoryBehind")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -398,50 +406,6 @@ namespace HandmadeShop.Infrastructure.Migrations
                     b.HasIndex("ProductOptionId");
 
                     b.ToTable("ProductOptionValue", (string)null);
-                });
-
-            modelBuilder.Entity("HandmadeShop.Domain.Entities.Review", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ImageURL")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastUpdatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Review", (string)null);
                 });
 
             modelBuilder.Entity("HandmadeShop.Domain.Entities.Category", b =>
@@ -520,30 +484,9 @@ namespace HandmadeShop.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("HandmadeShop.Domain.Entities.Review", b =>
-                {
-                    b.HasOne("HandmadeShop.Domain.Entities.Product", "Product")
-                        .WithMany("Reviews")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HandmadeShop.Domain.Entities.AppUser", "User")
-                        .WithMany("Reviews")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("HandmadeShop.Domain.Entities.AppUser", b =>
                 {
                     b.Navigation("Orders");
-
-                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("HandmadeShop.Domain.Entities.Category", b =>
@@ -563,8 +506,6 @@ namespace HandmadeShop.Infrastructure.Migrations
             modelBuilder.Entity("HandmadeShop.Domain.Entities.Product", b =>
                 {
                     b.Navigation("Options");
-
-                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("HandmadeShop.Domain.Entities.ProductOption", b =>

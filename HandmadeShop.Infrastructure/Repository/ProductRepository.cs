@@ -52,7 +52,7 @@ namespace HandmadeShop.Infrastructure.Repository
         {
             return await _context.Products
                 .Include(p => p.Category)
-                .Include(p => p.Reviews)
+                //.Include(p => p.Reviews)
                 .Include(p => p.Options)
                 .ThenInclude(o => o.Values).FirstOrDefaultAsync(p => p.Id == id && p.IsDeleted == false);
         }

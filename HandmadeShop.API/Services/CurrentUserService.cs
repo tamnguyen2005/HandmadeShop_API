@@ -19,5 +19,13 @@ namespace HandmadeShop.API.Services
                 return _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
             }
         }
+
+        public string? Name
+        {
+            get
+            {
+                return _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Email);
+            }
+        }
     }
 }
