@@ -39,10 +39,15 @@ Note: The API will be available at http://localhost:5000/swagger.
 Here is a quick overview of the main API resources:
 
 Method,Endpoint,Description,Auth Required
+
 POST,/api/auth/login,Authenticate user and get JWT,No
+
 POST,/api/auth/register,Register a new user,No
+
 GET,/api/products,Get list of products,No
+
 GET,/api/cart,Get current user's Redis cart,Yes
+
 POST,/api/cart,Add item to Redis cart,Yes
 
 Note: Real-time connections are handled via /chatHub and /notificationHub using WebSockets.
