@@ -121,6 +121,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseMiddleware<GlobalExceptionMiddleware>();
 //app.UseHttpsRedirection();
+app.UseRouting();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
