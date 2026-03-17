@@ -129,5 +129,19 @@ app.UseAuthorization();
 app.MapHub<NotificationHub>("/notificationHub");
 app.MapHub<ChatHub>("/chatHub");
 app.MapControllers();
-
+using (var scope = app.Services.CreateScope())
+{
+    var service = scope.ServiceProvider;
+    try
+    {
+        var context = service.GetRequiredService<HandmadeShopDBContext>();
+        context.Database.Migrate();
+        Console.WriteLine("[DB SETUP] Database migration completed successfully!");
+    }
+    catch (Exception e)
+    {
+        var logger = service.GetRequiredService<ILogger<Program>>();
+        logger.LogError(e, "[DB SETUP] An error occurred while migrating the database.");
+    }
+}
 app.Run();
