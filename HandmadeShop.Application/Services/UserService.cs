@@ -25,7 +25,7 @@ namespace HandmadeShop.Application.Services
         {
             var userList = await _unitOfWork.Users.FindAsync(u => u.Email == request.Email);
             var user = userList.FirstOrDefault();
-            if (user == null || _passwordHasher.Verify(user.PasswordHash, request.Password))
+            if (user == null || !_passwordHasher.Verify(user.PasswordHash, request.Password))
             {
                 throw new ArgumentException("Email or password is not correct !");
             }
