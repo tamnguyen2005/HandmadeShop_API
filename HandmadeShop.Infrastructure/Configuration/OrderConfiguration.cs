@@ -20,7 +20,7 @@ namespace HandmadeShop.Infrastructure.Configuration
             builder.HasOne(o => o.User)
                    .WithMany(u => u.Orders)
                    .HasForeignKey(o => o.UserId)
-                   .OnDelete(DeleteBehavior.Restrict);
+                   .OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(o => o.Items)
                    .WithOne()
                    .HasForeignKey(i => i.OrderId)

@@ -43,6 +43,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<ICacheService, RedisService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IProductService>(provider =>
 {
     var innerService = provider.GetRequiredService<ProductService>();

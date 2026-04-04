@@ -11,7 +11,7 @@ namespace HandmadeShop.Application.Patterns.States
 
         public override void Cancel(Order order)
         {
-            order.Status = "Canceled";
+            order.Status = "Cancelled";
         }
     }
 }
