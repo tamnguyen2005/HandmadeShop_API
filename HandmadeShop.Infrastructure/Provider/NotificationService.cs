@@ -18,7 +18,7 @@ namespace HandmadeShop.Infrastructure.Provider
 
         public async Task SendNotificationToUserAsync(string userId, string message)
         {
-            var connections = _connectionManager.GetConnection(userId);
+            var connections = _connectionManager.GetInstance(userId);
             if (connections.Any())
             {
                 await _hub.Clients.Clients(connections).SendAsync("OrderCreatedMessage", message);

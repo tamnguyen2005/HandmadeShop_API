@@ -39,7 +39,7 @@
             }
         }
 
-        public List<string> GetConnection(string userId)
+        public List<string> GetInstance(string userId)
         {
             lock (_lock)
             {

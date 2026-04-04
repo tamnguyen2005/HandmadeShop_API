@@ -36,7 +36,7 @@ namespace HandmadeShop.Infrastructure.SignalR
 
         public async Task SendByAdmin(string Id, string message)
         {
-            var user = _userConnectionManager.GetConnection(Id);
+            var user = _userConnectionManager.GetInstance(Id);
             if (!user.Any())
             {
                 // Admin gửi nhưng user đi đâu mất tiêu -> Gửi lại cho admin on("FailToSendMessage")
