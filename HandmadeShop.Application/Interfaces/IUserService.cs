@@ -9,5 +9,13 @@ namespace HandmadeShop.Application.Interfaces
         Task RegisterAsync(RegisterRequest request);
 
         Task UpdateUserInfo(UpdateUserRequest request);
+
+        Task ForgotPassword(ForgotPasswordRequest request);
+
+        Task ResetPassword(ResetPasswordRequest request);
+
+        Task ChangePassword(ChangePasswordRequest request);
+
+        Task DeleteAccount(DeleteUserRequest request);
     }
 }
