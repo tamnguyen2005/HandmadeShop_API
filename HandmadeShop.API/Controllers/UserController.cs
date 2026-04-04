@@ -28,5 +28,40 @@ namespace HandmadeShop.API.Controllers
             await _userService.RegisterAsync(request);
             return NoContent();
         }
+
+        [HttpPost("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
+        {
+            await _userService.ForgotPassword(request);
+            return NoContent();
+        }
+
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        {
+            await _userService.ResetPassword(request);
+            return NoContent();
+        }
+
+        [HttpPost("ChangePassword")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
+        {
+            await _userService.ChangePassword(request);
+            return NoContent();
+        }
+
+        [HttpPut()]
+        public async Task<IActionResult> UpdateInformation(UpdateUserRequest request)
+        {
+            await _userService.UpdateUserInfo(request);
+            return NoContent();
+        }
+
+        [HttpDelete()]
+        public async Task<IActionResult> DeleteUser(DeleteUserRequest request)
+        {
+            await _userService.DeleteAccount(request);
+            return NoContent();
+        }
     }
 }
