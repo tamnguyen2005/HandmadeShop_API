@@ -23,14 +23,20 @@ namespace HandmadeShop.Application.Services
             {
                 throw new KeyNotFoundException("Category does not exist !");
             }
-            var builder = new ProductBuilder()
-                .WithBaseInfo(request.Name, request.Description, request.BasePrice, request.StockQuantity, request.StoryBehind, request.CategoryId);
+            var builder = new ProductBuilder();
+            builder.AddName(request.Name)
+                   .AddDescription(request.Description)
+                   .AddBasePrice(request.BasePrice)
+                   .AddStockQuantity(request.StockQuantity)
+                   .AddStoryBehind(request.StoryBehind)
+                   .AddCategoryId(category.Id);
             var options = new List<CreateProductOptionRequest>();
             try
             {
                 foreach (var i in request.Options)
                 {
-                    options.Add(JsonSerializer.Deserialize<CreateProductOptionRequest>(i));
+                    var tmp = i[1..(i.Length - 1)];
+                    options.Add(JsonSerializer.Deserialize<CreateProductOptionRequest>(tmp));
                 }
             }
             catch (Exception ex)

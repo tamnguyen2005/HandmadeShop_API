@@ -4,12 +4,17 @@ namespace HandmadeShop.Application.Interfaces
 {
     public interface IProductBuilder
     {
-        IProductBuilder WithBaseInfo(string name
-                                   , string description
-                                   , decimal basePrice
-                                   , int stockQuantity
-                                   , string storyBehind
-                                   , Guid categoryId);
+        IProductBuilder AddName(string name);
+
+        IProductBuilder AddDescription(string description);
+
+        IProductBuilder AddBasePrice(decimal basePrice);
+
+        IProductBuilder AddStockQuantity(int quantity);
+
+        IProductBuilder AddStoryBehind(string storyBehind);
+
+        IProductBuilder AddCategoryId(Guid categoryId);
 
         IProductBuilder AddOption(string optionName, List<string> value);
 

@@ -16,25 +16,33 @@ namespace HandmadeShop.Application.Patterns.Builders
             };
         }
 
-        public IProductBuilder WithBaseInfo(string name
-                                          , string description
-                                          , decimal basePrice
-                                          , int stockQuantity
-                                          , string storyBehind
-                                          , Guid categoryId)
+        public IProductBuilder AddBasePrice(decimal basePrice)
         {
-            _product.Name = name;
-            _product.Description = description;
             _product.BasePrice = basePrice;
-            _product.StockQuantity = stockQuantity;
+            return this;
+        }
+
+        public IProductBuilder AddCategoryId(Guid categoryId)
+        {
             _product.CategoryId = categoryId;
-            _product.StoryBehind = storyBehind;
+            return this;
+        }
+
+        public IProductBuilder AddDescription(string description)
+        {
+            _product.Description = description;
             return this;
         }
 
         public IProductBuilder AddImageURL(string url)
         {
             _product.ImageURL = url;
+            return this;
+        }
+
+        public IProductBuilder AddName(string name)
+        {
+            _product.Name = name;
             return this;
         }
 
@@ -52,6 +60,18 @@ namespace HandmadeShop.Application.Patterns.Builders
                 }).ToList()
             };
             _product.Options.Add(option);
+            return this;
+        }
+
+        public IProductBuilder AddStockQuantity(int quantity)
+        {
+            _product.StockQuantity = quantity;
+            return this;
+        }
+
+        public IProductBuilder AddStoryBehind(string storyBehind)
+        {
+            _product.StoryBehind = storyBehind;
             return this;
         }
 
