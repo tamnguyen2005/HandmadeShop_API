@@ -28,5 +28,6 @@ namespace HandmadeShop.Application.DTOs.Product
         public string StoryBehind { get; set; }
 
         public List<string> Options { get; set; } = new List<string>();
+        public List<IFormFile>? SubImages { get; set; }
     }
 }

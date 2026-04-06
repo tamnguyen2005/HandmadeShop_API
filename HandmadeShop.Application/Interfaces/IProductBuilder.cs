@@ -20,6 +20,8 @@ namespace HandmadeShop.Application.Interfaces
 
         IProductBuilder AddImageURL(string url);
 
+        IProductBuilder AddSubImage(List<string> url);
+
         Product Build();
     }
 }

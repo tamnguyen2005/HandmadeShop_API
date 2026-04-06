@@ -26,6 +26,7 @@ namespace HandmadeShop.Infrastructure.Persistence
 
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<OrderHistory> OrderHistories { get; set; }
+        public DbSet<SubImage> SubImages { get; set; }
         //public DbSet<Review> Reviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

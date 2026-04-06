@@ -75,6 +75,23 @@ namespace HandmadeShop.Application.Patterns.Builders
             return this;
         }
 
+        public IProductBuilder AddSubImage(List<string> url)
+        {
+            List<SubImage> subImages = new List<SubImage>();
+            foreach (var i in url)
+            {
+                SubImage subImage = new SubImage()
+                {
+                    Id = Guid.NewGuid(),
+                    Url = i,
+                    ProductId = _product.Id
+                };
+                subImages.Add(subImage);
+            }
+            _product.SubImages = subImages;
+            return this;
+        }
+
         public Product Build()
         {
             return _product;

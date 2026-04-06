@@ -14,6 +14,8 @@
         //public double? AverageReview { get; set; } = 0;
         public string? CategoryName { get; set; } = string.Empty;
 
+        public List<string> SubImages { get; set; } = new List<string>();
+
         //public List<ReviewResponse> Reviews { get; set; } = new List<ReviewResponse>();
         public List<ProductOptionResponse> Options { get; set; } = new List<ProductOptionResponse>();
     }

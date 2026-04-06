@@ -18,5 +18,7 @@ namespace HandmadeShop.Domain.Entities
 
         //public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
         public virtual ICollection<ProductOption> Options { get; set; } = new List<ProductOption>();
+
+        public virtual ICollection<SubImage> SubImages { get; set; } = new List<SubImage>();
     }
 }

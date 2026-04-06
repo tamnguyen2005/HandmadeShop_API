@@ -52,6 +52,16 @@ namespace HandmadeShop.Application.Services
                 var url = await _photoService.UploadAsync(request.ImageURL);
                 builder.AddImageURL(url);
             }
+            if (request.SubImages != null && request.SubImages.Count > 0)
+            {
+                List<string> url = new List<string>();
+                foreach (var s in request.SubImages)
+                {
+                    var imageUrl = await _photoService.UploadAsync(s);
+                    url.Add(imageUrl);
+                }
+                builder.AddSubImage(url);
+            }
             var product = builder.Build();
             await _unitOfWork.Products.AddAsync(product);
             await _unitOfWork.SaveChangesAsync();
@@ -97,6 +107,7 @@ namespace HandmadeShop.Application.Services
                 //    UserName = r.UserName,
                 //    ImageURL = r.ImageURL ?? null
                 //}).ToList(),
+                SubImages = product.SubImages.Select(s => s.Url).ToList(),
                 Options = product.Options
                 .Select(o => new ProductOptionResponse()
                 {

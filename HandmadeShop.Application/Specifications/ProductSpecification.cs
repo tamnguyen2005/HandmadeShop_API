@@ -18,7 +18,7 @@ namespace HandmadeShop.Application.Specifications
                 default: AddOrderBy(x => x.Id); break;
             }
             var skip = (request.PageNumber - 1) * request.PageSize;
-            ApplyPaging(skip ?? 0, request.PageSize ?? 10);
+            ApplyPaging(skip ?? 0, request.PageSize ?? 20);
         }
     }
 }
